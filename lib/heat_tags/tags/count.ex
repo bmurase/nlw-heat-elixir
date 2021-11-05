@@ -3,12 +3,12 @@ defmodule HeatTags.Tags.Count do
 
   def call do
     Get.today_messages()
-    |> Task.async_stream(fn message -> count_words(message.message) end)
-    |> Enum.reduce(%{}, fn elem, acc -> sum_values(elem, acc) end)
+    |> Task.async_stream(&count_words(&1.message))
+    |> Enum.reduce(%{}, &sum_values(&1, &2))
   end
 
   defp count_words(message) do
-    message.message
+    message
     |> String.split()
     |> Enum.frequencies()
   end
